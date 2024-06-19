@@ -1,27 +1,27 @@
 const mongoose = require("mongoose");
 const { type } = require("os");
 const { setThePassword } = require("whatwg-url");
-const Schema  = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    name :{
-        type:String,
+    name: {
+        type: String,
     },
-    email:{
-        type:String,
-        require:true,
-        unique:true
+    email: {
+        type: String,
+        required: true,
+        unique: true
     },
-    username:{
-        type:String,
-        require:true,
-        unique:true
+    username: {
+        type: String,
+        required: true,
+        unique: true
     },
-    password:{
-        type:String,
-        require:true
+    password: {
+        type: String,
+        required: true
     }
 
 })
 
-module.exports = mongoose.model("userModel",userSchema);
+module.exports = mongoose.model("userModel", userSchema);

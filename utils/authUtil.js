@@ -4,12 +4,14 @@
 
 function isEmailAddress(str) {
     var pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-    return str.match(pattern);
+    if(str.match(pattern))
+        return true;
+    return false;
 }
 
 function registrationPageValidation({ name, email, username, password }) {
 
-    console.log("in functoin ", name, email)
+    console.log("in functoin ", name, email, username, password)
     return new Promise((resolve, reject) => {
 
         if (!name) {
@@ -54,4 +56,34 @@ function registrationPageValidation({ name, email, username, password }) {
     })
 }
 
-module.exports = { registrationPageValidation };
+
+//login page validation.
+function loginPageValidation({loginId, password})
+{
+    return new Promise((resolve, reject)=>{
+
+        //check the loginId or password is present or not.
+        if(!loginId)
+            {
+                reject("Please Enter Login Id to login")
+            }
+        else if(!password)
+            {
+                reject("Please Enter password to login")
+            }
+
+        //check string format or not.
+        if(typeof loginId !== "string")
+            {
+                reject("loginId must be in String format")
+            }
+        else if(typeof password !== "string")
+            {
+                reject("password must be in String format")
+            }
+
+            resolve("all good till now")
+        
+    })
+}
+module.exports = { registrationPageValidation, loginPageValidation, isEmailAddress };

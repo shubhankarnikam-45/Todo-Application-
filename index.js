@@ -16,7 +16,7 @@ const { log } = require("console");
 //bcrypt.
 const bcrypt = require("bcryptjs")
 //file import.
-const {registrationPageValidation} =require("./utils/authUtil")
+const {registrationPageValidation, loginPageValidation, isEmailAddress} =require("./utils/authUtil")
 
 //import model.
 //import userModel.
@@ -26,6 +26,7 @@ const error = cli.red;
 const warn = cli.blue;
 const notice = cli.yellow.bold;
 const apicheck = cli.bgWhiteBright;
+const check = cli.bgCyan;
 
 //middleware to convert json to JS object.
 app.use(express.json());
@@ -71,6 +72,7 @@ registrationPageRouter
 loginPageRouter
 .route("/")
 .get(getLoginPage)
+.post(postLoginPage)
 
 //function of getRegistraionPage
 function getRegistrationPage(req, res)
@@ -83,7 +85,7 @@ async function postRegistraionPage(req, res)
 {
     console.log(apicheck("post request for registaion"));   
     const {name, email, username, password} = req.body;
-    console.log(warn(name, email, username, password));
+    // console.log(check(name, email, username, password));
 
     //data validation.
     try {
@@ -95,27 +97,28 @@ async function postRegistraionPage(req, res)
         });
     }
     //encryption.
-    let hashPassword = await bcrypt.hash(password, parseInt(process.env.SALT), function(err, hash) {
-        // Store hash in your password DB.
-        console.log(err);
-        console.log(hash)
-    });
+    let hashPassword = await bcrypt.hash(password, parseInt(process.env.SALT));
 
     //save to database.
+    // console.log("hased password ", hashPassword);
    const userData =  userModel({
-    name, 
-    email,
-    username,
-    password:hashPassword
+    name: name, 
+    email: email,
+    username: username,
+    password:hashPassword,
    })
 
+//    console.log(error("error is found ", userData))
+
    try {
-    let userData = await userData.save();
+    const userDataFromDB = await userData.save();
     return res.status(201).json({
         message:"data saved successfully in database.",
-        userData 
+        userDataFromDB 
     })
    } catch (err) {
+
+        console.log(err);
         res.status(500).json({
             message:"internal server error",
             error:err
@@ -126,9 +129,70 @@ async function postRegistraionPage(req, res)
     
 
 }
+
 //function of getLoginPage
 function getLoginPage(req, res)
 {
     return res.render("loginPage")
+}
+
+// function postLoginPage
+async function postLoginPage(req, res)
+{
+    console.log(apicheck("post request for login page is running fine..."));
+
+    //destructuring the user data.
+    const{loginId, password} = req.body;
+    // console.log(check(loginId, passsword))
+    
+    //data validation.
+    try {
+        await loginPageValidation({loginId, password})
+
+        //check the loginId is email or username.
+        //and then find in the database.
+        //if from database is null means we return some error message
+        let userLoginIdCheckFromDB;
+
+        if(isEmailAddress(loginId))
+            {
+                console.log(check("email"))
+                //that means loginId is email.
+                userLoginIdCheckFromDB = await userModel.findOne({email: loginId});
+            }
+        else
+            {
+                console.log(check("usename"))
+                //that means loginId is usename.
+                userLoginIdCheckFromDB = await userModel.findOne({username: loginId});
+            }
+        
+        console.log("user data ", userLoginIdCheckFromDB)
+        //if userLoginCheckFromDb.
+        if(!userLoginIdCheckFromDB)
+            {
+                return res.status(400).json({
+                    message:"Enter Wrong login Id"
+                })
+            }
+        
+            
+            
+        //now we decrypt the passoword and check the enter password is correct or not.
+        console.log("username and psss", password, userLoginIdCheckFromDB.password)
+        const decryptPassword = await bcrypt.compare(password, userLoginIdCheckFromDB.password)
+
+        console.log(check("decrypt pass ", decryptPassword))
+        
+
+
+        console.log(check("last line of login api"));
+    } catch (err) {
+        console.log(error("from client side blunder happen===>", err));
+        return res.status(400).json({
+            message :err
+        })
+    }
+
 }
 
