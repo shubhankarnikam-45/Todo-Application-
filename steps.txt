@@ -1,0 +1,12 @@
+//1. conguring the express server.
+    //cli-color npm package.
+
+//2. datbase connection. 
+
+//3. set "view engine" as the "ejs".
+
+//4. make regitration and login page.
+
+//5. make API for get and post request .
+
+//6. making login page validation.
