@@ -19,6 +19,7 @@ const { registrationPageValidation, loginPageValidation, isEmailAddress } = requ
 //import model.
 //import userModel.
 const userModel = require("./models/userModel");
+const checkAuthorization = require("./middleware/isAuth");
 
 //cli npm packaage variable.
 
@@ -70,28 +71,43 @@ app.use(session({
 app.set("view engine", "ejs")
 
 
-app.get("/", () => {
-    console.log(notice("server is runing"))
-})
-//makign API for the registraion.
+// app.get("/", () => {
+//     console.log(notice("server is runing"))
+// })
+//making API for the registraion.
 const registrationPageRouter = express.Router();
 app.use("/registration", registrationPageRouter);
 
-//makign API for the login.
+//making API for the login.
 const loginPageRouter = express.Router();
 app.use("/login", loginPageRouter);
 
+//making API for the dashboard
+const dashboardRouter = express.Router();
+app.use("/dashboard", dashboardRouter);
+
+//making API for the home page.
+const homeRouter = express.Router();
+app.use("/", homeRouter);
+
+//Home page routers.
+homeRouter
+.route("/")
+.get(getHomePage)
+
+// function getHomePage
+function getHomePage(req, res)
+{
+    console.log(check("home")
+    )
+    return res.render("homePage.ejs")
+}
 registrationPageRouter
     .route("/")
     .get(getRegistrationPage)
     .post(postRegistraionPage)
 
-loginPageRouter
-    .route("/")
-    .get(getLoginPage)
-    .post(postLoginPage)
-
-//function of getRegistraionPage
+    //function of getRegistraionPage
 function getRegistrationPage(req, res) {
     return res.render("registrationPage")
 }
@@ -144,6 +160,12 @@ async function postRegistraionPage(req, res) {
 
 
 }
+
+//login page mini app.
+loginPageRouter
+    .route("/")
+    .get(getLoginPage)
+    .post(postLoginPage)
 
 //function of getLoginPage
 function getLoginPage(req, res) {
@@ -199,13 +221,20 @@ async function postLoginPage(req, res) {
         //here we not create the model for  to store the session in database.
         //we modify the session and it created automatically.
         req.session.isAuth = true;
-        // req.session.user = {
-        //     userId : userLoginIdCheckFromDB._id,
-        //     username : userLoginIdCheckFromDB.username,
-        //     email : userLoginIdCheckFromDB.email,
-        // }
+        req.session.user = {
+            userId : userLoginIdCheckFromDB._id,
+            username : userLoginIdCheckFromDB.username,
+            email : userLoginIdCheckFromDB.email,
+        }
 
         console.log(req.session)
+
+        // return res.status(200).json({
+        //     message : "done"
+        // })
+
+        //redirect to the dashboard page.
+        res.redirect("/dashboard");
         console.log(check("last line of login api"));
     } catch (err) {
         console.log(but("from client side blunder happen===>", err));
@@ -214,10 +243,19 @@ async function postLoginPage(req, res) {
         })
     }
 
-    return res.status(200).json({
-        message : "done"
-    })
+    
 
+}
+
+//dashboard page mini route.
+dashboardRouter
+.route("/")
+.get(checkAuthorization, getDashboardPage)
+
+//function for the getDashboard page.
+function getDashboardPage(req, res)
+{
+        console.log(check("dashboard pageee"));
 }
 
 //listen server.
