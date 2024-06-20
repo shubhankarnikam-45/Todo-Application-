@@ -19,12 +19,12 @@ const { registrationPageValidation, loginPageValidation, isEmailAddress } = requ
 //import model.
 //import userModel.
 const userModel = require("./models/userModel");
-const checkAuthorization = require("./middleware/isAuth");
+const checkAuthentication = require("./middleware/isAuth");
 
 //cli npm packaage variable.
 
 //constant.
-const bug= cli.red;
+const bug = cli.red;
 const warn = cli.blue;
 const notice = cli.yellow.bold;
 const apicheck = cli.bgWhiteBright;
@@ -90,14 +90,18 @@ app.use("/dashboard", dashboardRouter);
 const homeRouter = express.Router();
 app.use("/", homeRouter);
 
+//making API for the Logout.
+const logoutRouter = express.Router();
+app.use("/logout", logoutRouter);
+
 //Home page routers.
 homeRouter
-.route("/")
-.get(getHomePage)
+    .route("/")
+    .get(getHomePage)
+
 
 // function getHomePage
-function getHomePage(req, res)
-{
+function getHomePage(req, res) {
     console.log(check("home")
     )
     return res.render("homePage.ejs")
@@ -107,7 +111,7 @@ registrationPageRouter
     .get(getRegistrationPage)
     .post(postRegistraionPage)
 
-    //function of getRegistraionPage
+//function of getRegistraionPage
 function getRegistrationPage(req, res) {
     return res.render("registrationPage")
 }
@@ -222,9 +226,9 @@ async function postLoginPage(req, res) {
         //we modify the session and it created automatically.
         req.session.isAuth = true;
         req.session.user = {
-            userId : userLoginIdCheckFromDB._id,
-            username : userLoginIdCheckFromDB.username,
-            email : userLoginIdCheckFromDB.email,
+            userId: userLoginIdCheckFromDB._id,
+            username: userLoginIdCheckFromDB.username,
+            email: userLoginIdCheckFromDB.email,
         }
 
         console.log(req.session)
@@ -234,7 +238,7 @@ async function postLoginPage(req, res) {
         // })
 
         //redirect to the dashboard page.
-        res.redirect("/dashboard");
+        return res.redirect("/dashboard");
         console.log(check("last line of login api"));
     } catch (err) {
         console.log(but("from client side blunder happen===>", err));
@@ -243,19 +247,40 @@ async function postLoginPage(req, res) {
         })
     }
 
-    
+
 
 }
 
 //dashboard page mini route.
 dashboardRouter
-.route("/")
-.get(checkAuthorization, getDashboardPage)
+    .route("/")
+    .get(checkAuthentication, getDashboardPage)
 
 //function for the getDashboard page.
-function getDashboardPage(req, res)
-{
-        console.log(check("dashboard pageee"));
+function getDashboardPage(req, res) {
+    console.log(check("dashboard pageee"));
+    return res.render("dashboardPage.ejs");
+}
+
+//mini app for logout.
+logoutRouter
+    .route("/")
+    .post(checkAuthentication, postLogout)
+
+// function postLogout
+function postLogout(req, res) {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({
+                message : "logout unsuccessful... ( this is from server side error)"
+            })
+        }
+        else {
+            return res.status(200).json({
+                message : "logout successful..."
+            })
+        }
+    })
 }
 
 //listen server.

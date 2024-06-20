@@ -1,7 +1,7 @@
 
-const checkAuthorization = (req, res, next) => {
+const checkAuthentication = (req, res, next) => {
 
-    console.log("middleware ==> ",req.session.isAuth);
+    // console.log("middleware ==> ",req.session.isAuth);
     if (req.session.isAuth == true) {
         next(); 
     }
@@ -14,4 +14,4 @@ const checkAuthorization = (req, res, next) => {
 }
 
 
-module.exports = checkAuthorization;
+module.exports = checkAuthentication;
