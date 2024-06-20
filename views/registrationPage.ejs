@@ -3,73 +3,98 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title> Register Page </title>
+    <title>Register Page</title>
     <style>
-        Body {
-            font-family: Calibri, Helvetica, sans-serif;
-            background-color: pink;
-        }
-
-        button {
-            background-color: #4CAF50;
-            width: 100%;
-            color: orange;
-            padding: 15px;
-            margin: 10px 0px;
-            border: none;
-            cursor: pointer;
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
         }
 
         form {
-            border: 3px solid #f1f1f1;
+            border: 1px solid #d1d1d1;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4a4a4a;
+            margin-bottom: 20px;
         }
 
         input[type=text],
         input[type=password] {
             width: 100%;
             margin: 8px 0;
-            padding: 12px 20px;
-            display: inline-block;
-            border: 2px solid green;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             box-sizing: border-box;
+            font-size: 16px;
+            background-color: #f8f8f8;
+        }
+
+        input[type=text]:focus,
+        input[type=password]:focus {
+            border-color: #4a90e2;
+            outline: none;
+            background-color: #eef5ff;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            opacity: 0.7;
+            background-color: #417cb8;
         }
-
-        .cancelbtn {
-            width: auto;
-            padding: 10px 18px;
-            margin: 10px 5px;
-        }
-
 
         .container {
-            padding: 25px;
-            background-color: lightblue;
+            padding: 20px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+            font-size: 14px;
         }
     </style>
 </head>
 
 <body>
-    <center>
-        <h1> Register Form </h1>
-    </center>
-    <form action='/registration' method="POST">
+    <form action="/registration" method="POST">
+        <h1>Register Form</h1>
         <div class="container">
-            <label for="name">Name : </label>
+            <label for="name">Name:</label>
             <input type="text" placeholder="Enter Name" name="name" required>
-            <label for="email">Email : </label>
+            <label for="email">Email:</label>
             <input type="text" placeholder="Enter Email" name="email" required>
-            <label for="username">Username : </label>
+            <label for="username">Username:</label>
             <input type="text" placeholder="Enter Username" name="username" required>
-            <label for="password">Password : </label>
+            <label for="password">Password:</label>
             <input type="password" placeholder="Enter Password" name="password" required>
             <button type="submit">Register</button>
         </div>
     </form>
-
 </body>
 
 </html>
