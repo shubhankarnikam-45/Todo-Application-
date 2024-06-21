@@ -302,6 +302,10 @@ todoRouter
     .route("/update-todo")
     .post(checkAuthentication, updateTodo)
 
+todoRouter
+    .route("/delete-todo")
+    .post(checkAuthentication, deleteTodo)
+
 
 //THIS BELOW ROUTE ARE SEPERATE HENCE WE NOT CREATE THE MINI APP FOR THAT.
 //function post todo.
@@ -472,6 +476,65 @@ async function updateTodo(req, res) {
 
 }
 
+//function that delete todo.
+async function deleteTodo(req, res)
+{
+    console.log(check("in delete"))
+    // console.log("body ", req.body);
+
+    const {todoId} = req.body;
+    const username = req.session.user.username;
+
+    // console.log(check("username ",username));
+
+    //if todoID is missing 
+    if(!todoId)
+        {
+            return res.send({
+                status : 400,
+                message : "todoId is missing"
+            })
+        }
+
+    //finding todo ID in the database.
+    try {
+        const isTodoIdPresentInDB = await todoModel.findOne({_id : todoId});
+        console.log("todo id in database", isTodoIdPresentInDB);
+
+        //if todo id is not present in database.
+        if(isTodoIdPresentInDB === null)
+            {
+                return res.send({
+                    status : 400,
+                    message : `in database not todoId present with ${isTodoIdPresentInDB}`,
+                })
+            }
+        //extract the user name of todoId.
+        const usernameFromTodoId = isTodoIdPresentInDB.username;
+        // console.log("username from database ",usernameFromTodoId);
+
+        //now we check this username with session based authentication id 
+        //if not match then we return error.
+        if(usernameFromTodoId !== username)
+            {
+                return res.send({
+                    status : 403,
+                    message : "unautorized access",
+                })
+            }
+
+        const deletedItemPrev = await todoModel.findOneAndDelete({_id : todoId});
+        console.log(deletedItemPrev);
+        console.log(check("before catch"))
+    } catch (error) {
+        return res.send({
+            status : 500,
+            message :"server side error",
+            error : error
+        })
+    }
+
+}
 
 
 
