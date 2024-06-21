@@ -1,7 +1,7 @@
 
 const checkAuthentication = (req, res, next) => {
 
-    // console.log("middleware ==> ",req.session.isAuth);
+    // console.log("middleware  ==> ",req.session);
     if (req.session.isAuth == true) {
         next(); 
     }

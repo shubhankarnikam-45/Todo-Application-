@@ -20,6 +20,8 @@ const { registrationPageValidation, loginPageValidation, isEmailAddress } = requ
 //import userModel.
 const userModel = require("./models/userModel");
 const checkAuthentication = require("./middleware/isAuth");
+const todoModel = require("./models/todoModel");
+const todoValidation = require("./utils/todoUtil");
 
 //cli npm packaage variable.
 
@@ -94,6 +96,10 @@ app.use("/", homeRouter);
 const logoutRouter = express.Router();
 app.use("/logout", logoutRouter);
 
+// Making Router for the 'todos',
+const todoRouter = express.Router();
+app.use("/todos", todoRouter);
+
 //Home page routers.
 homeRouter
     .route("/")
@@ -116,7 +122,7 @@ function getRegistrationPage(req, res) {
     return res.render("registrationPage")
 }
 
-//  function postRegistraionPage
+//  function postRegistraionPage is done 
 async function postRegistraionPage(req, res) {
     console.log(apicheck("post request for registaion"));
     const { name, email, username, password } = req.body;
@@ -241,7 +247,7 @@ async function postLoginPage(req, res) {
         return res.redirect("/dashboard");
         console.log(check("last line of login api"));
     } catch (err) {
-        console.log(but("from client side blunder happen===>", err));
+        console.log(bug("from client side blunder happen===>", err));
         return res.status(400).json({
             message: err
         })
@@ -258,7 +264,7 @@ dashboardRouter
 
 //function for the getDashboard page.
 function getDashboardPage(req, res) {
-    console.log(check("dashboard pageee"));
+    // console.log(check("dashboardd pageee"));
     return res.render("dashboardPage.ejs");
 }
 
@@ -272,16 +278,202 @@ function postLogout(req, res) {
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({
-                message : "logout unsuccessful... ( this is from server side error)"
+                message: "logout unsuccessful... ( this is from server side error)"
             })
         }
         else {
             return res.status(200).json({
-                message : "logout successful..."
+                message: "logout successful..."
             })
         }
     })
 }
+
+//mini app for todo.
+todoRouter
+    .route("/create-todo")
+    .post(checkAuthentication, createTodo);
+
+todoRouter
+    .route("/read-todo")
+    .get(checkAuthentication, readTodo)
+
+todoRouter
+    .route("/update-todo")
+    .post(checkAuthentication, updateTodo)
+
+
+//THIS BELOW ROUTE ARE SEPERATE HENCE WE NOT CREATE THE MINI APP FOR THAT.
+//function post todo.
+async function createTodo(req, res) {
+    // console.log(req.session)
+    // console.log(check("post todo"));
+
+    //required data collect from req. object.
+    const { todo } = (req.body);
+    // console.log(todo)
+
+    //todo validation.
+    try {
+        await todoValidation({ todo })
+    } catch (error) {
+        return res.status(400).json({
+            "message": "todo is invalid",
+            "error": error
+        })
+    }
+    // console.log(req.session)
+
+    //creating todo object to store in database.
+    const todoObjToStoreInDB = new todoModel({
+        todo: todo,
+        username: req.session.user.username
+    })
+
+    //save in the database.
+    try {
+        const todoDataFromDb = await todoObjToStoreInDB.save();
+        // console.log("todo data from database.", todoDataFromDb);
+        return res.status(201).json({
+            message: "Todo created successfully",
+            data: todoDataFromDb,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            "message": "data not saved in database  internal server error",
+            error
+        })
+    }
+    return res.send('done')
+}
+
+//function that read todo.
+async function readTodo(req, res) {
+    // console.log(check("in get request todo done done...."));
+
+    //we have identify the unique identifire to search.
+    const username = req.session.user.username;
+    // console.log(check("username ", username));
+
+    //search the todo in the database.
+    try {
+        const allTodosFromDb = await todoModel.find({ username });
+        // console.log("all entires", allTodosFromDb)
+
+        if (allTodosFromDb.length == 0) {
+            return res.send({
+                status: 204,
+                message: "No entry within the database.",
+                userTodo: []
+
+            })
+        }
+        else {
+            return res.send({
+                status: 200,
+                message: "extract todo data from database successfully...",
+                userTodo: allTodosFromDb
+
+            })
+        }
+
+    } catch (error) {
+        return res.send({
+            status: 500,
+            message: "extract todo data from database is not successfully... ( server side error) ",
+            error: error,
+
+        })
+    }
+
+}
+
+//function that update todo.
+async function updateTodo(req, res) {
+    // console.log(check("update todo"))
+
+    const { newTodo, todoId } = req.body;
+
+    //if todo is not present.
+    if (!todoId) {
+        return res.json({
+            status: 400,
+            message: "todo id is missing."
+        })
+    }
+    //todo validateion
+    try {
+        await todoValidation({ todo: newTodo })
+    } catch (error) {
+        return res.send({
+            status: 400,
+            message: "enter valid todo",
+            error: error
+        })
+    }
+
+    //finding this todo in the database.
+
+    try {
+        const isTodoPresent = await todoModel.findOne({ _id: todoId });
+        // console.log("is todo present ", isTodoPresent); 
+
+        //if todo id not present in database.
+        if (!isTodoPresent) {
+            return res.send({
+                status: 400,
+                message: `Todo is not present with ID ${todoId}`,
+
+            })
+        }
+
+        //if here another user try to edit this todo , we use below condition.
+        // console.log(isTodoPresent.username, req.session.user.username) 
+
+        if (isTodoPresent.username !== req.session.user.username) {
+            // console.log(check("not valid"));
+            return res.send({
+                status: 403,
+                message: "unautorized access...",
+                data: isTodoPresent
+            })
+        }
+
+
+    } catch (error) {
+        return res.send({
+            status: 400,
+            message: `internal server error (may be id is wrong)`,
+            error: error
+        })
+    }
+
+
+
+
+
+    //now from actual edit logic start.
+    try {
+        const todoPrev = await todoModel.findOneAndUpdate({ _id: todoId }, { todo: newTodo });
+
+        //this when we successfully update the todo.
+        return res.send({
+            status: 200,
+            message: "todo updated successfully...",
+            data: todoPrev
+        })
+    } catch (error) {
+        return res.send({
+            status: 400,
+            message: "server side error...",
+            error: error
+        })
+    }
+
+}
+
+
+
 
 //listen server.
 app.listen(process.env.PORT, () => {
