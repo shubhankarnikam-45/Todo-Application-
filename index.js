@@ -58,9 +58,8 @@ mongoose.connect(process.env.MONGO_URL)
 //middleware to convert json to JS object.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 //middleware for the seesion.
-
-
 //this is used to create session
 app.use(session({
     secret: process.env.SECRETE_KEY,
@@ -188,7 +187,7 @@ function getLoginPage(req, res) {
 async function postLoginPage(req, res) {
     console.log(apicheck("post request for login page is running fine..."));
 
-    console.log(req.session);
+    // console.log(req.session);
     //destructuring the user data.
     const { loginId, password } = req.body;
     // console.log(check(loginId, passsword))
@@ -246,7 +245,7 @@ async function postLoginPage(req, res) {
         // })
 
         //redirect to the dashboard page.
-        return res.redirect("/dashboard");
+        return  res.redirect("/dashboard");
         // console.log(check("last line of login api"));
     } catch (err) {
         console.log(bug("from client side blunder happen===>", err));
@@ -355,7 +354,7 @@ async function createTodo(req, res) {
 
 //function that read todo.
 async function readTodo(req, res) {
-    // console.log(check("in get request todo done done...."));
+    console.log(check("in get request todo done done...."));
 
     //we have identify the unique identifire to search.
     const username = req.session.user.username;
@@ -364,7 +363,7 @@ async function readTodo(req, res) {
     //search the todo in the database.
     try {
         const allTodosFromDb = await todoModel.find({ username });
-        // console.log("all entires", allTodosFromDb)
+        console.log("all entires", allTodosFromDb)
 
         if (allTodosFromDb.length == 0) {
             return res.send({

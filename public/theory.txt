@@ -1,0 +1,4 @@
+//in this folder files only run on the browser.
+
+//in sever file(index.js) must include the middleware 
+--> app.use(express.static("public"));
