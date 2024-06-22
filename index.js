@@ -53,14 +53,15 @@ mongoose.connect(process.env.MONGO_URL)
 
 
 
-console.log("mongo URL ", process.env.MONGO_URL)
-console.log("secret key", process.env.SECRETE_KEY)
+// console.log("mongo URL ", process.env.MONGO_URL)
+// console.log("secret key", process.env.SECRETE_KEY)
 //middleware to convert json to JS object.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //middleware for the seesion.
 
 
+//this is used to create session
 app.use(session({
     secret: process.env.SECRETE_KEY,
     store: store,
@@ -76,6 +77,7 @@ app.set("view engine", "ejs")
 // app.get("/", () => {
 //     console.log(notice("server is runing"))
 // })
+
 //making API for the registraion.
 const registrationPageRouter = express.Router();
 app.use("/registration", registrationPageRouter);
@@ -222,10 +224,10 @@ async function postLoginPage(req, res) {
 
 
         //now we decrypt the passoword and check the enter password is correct or not.
-        console.log("username and psss", password, userLoginIdCheckFromDB.password)
+        // console.log("username and psss", password, userLoginIdCheckFromDB.password)
         const decryptPassword = await bcrypt.compare(password, userLoginIdCheckFromDB.password)
 
-        console.log(check("decrypt pass ", decryptPassword))
+        // console.log(check("decrypt pass ", decryptPassword))
 
 
         //here we not create the model for  to store the session in database.
@@ -237,7 +239,7 @@ async function postLoginPage(req, res) {
             email: userLoginIdCheckFromDB.email,
         }
 
-        console.log(req.session)
+        // console.log(req.session)
 
         // return res.status(200).json({
         //     message : "done"
@@ -245,7 +247,7 @@ async function postLoginPage(req, res) {
 
         //redirect to the dashboard page.
         return res.redirect("/dashboard");
-        console.log(check("last line of login api"));
+        // console.log(check("last line of login api"));
     } catch (err) {
         console.log(bug("from client side blunder happen===>", err));
         return res.status(400).json({
@@ -525,6 +527,12 @@ async function deleteTodo(req, res)
 
         const deletedItemPrev = await todoModel.findOneAndDelete({_id : todoId});
         console.log(deletedItemPrev);
+
+        return res.send({
+            status : 200,
+            message : "todo deleted successfully....",
+            data : deletedItemPrev,
+        })
         console.log(check("before catch"))
     } catch (error) {
         return res.send({
