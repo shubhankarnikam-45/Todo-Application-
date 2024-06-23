@@ -245,7 +245,7 @@ async function postLoginPage(req, res) {
         // })
 
         //redirect to the dashboard page.
-        return  res.redirect("/dashboard");
+        return res.redirect("/dashboard");
         // console.log(check("last line of login api"));
     } catch (err) {
         console.log(bug("from client side blunder happen===>", err));
@@ -317,6 +317,7 @@ async function createTodo(req, res) {
     //required data collect from req. object.
     const { todo } = (req.body);
     // console.log(todo)
+
 
     //todo validation.
     try {
@@ -395,13 +396,16 @@ async function readTodo(req, res) {
 
 //function that update todo.
 async function updateTodo(req, res) {
-    // console.log(check("update todo"))
+    console.log(check("update todo"))
 
     const { newTodo, todoId } = req.body;
 
+    // console.log("nto ", newTodo, "todo ID", todoId)
+
+
     //if todo is not present.
     if (!todoId) {
-        return res.json({
+        return res.send({
             status: 400,
             message: "todo id is missing."
         })
@@ -412,7 +416,7 @@ async function updateTodo(req, res) {
     } catch (error) {
         return res.send({
             status: 400,
-            message: "enter valid todo",
+            message:error,
             error: error
         })
     }
@@ -433,7 +437,7 @@ async function updateTodo(req, res) {
         }
 
         //if here another user try to edit this todo , we use below condition.
-        // console.log(isTodoPresent.username, req.session.user.username) 
+        console.log(isTodoPresent.username, req.session.user.username) 
 
         if (isTodoPresent.username !== req.session.user.username) {
             // console.log(check("not valid"));
@@ -478,66 +482,62 @@ async function updateTodo(req, res) {
 }
 
 //function that delete todo.
-async function deleteTodo(req, res)
-{
+async function deleteTodo(req, res) {
     console.log(check("in delete"))
     // console.log("body ", req.body);
 
-    const {todoId} = req.body;
+    const { todoId } = req.body;
     const username = req.session.user.username;
 
     // console.log(check("username ",username));
 
     //if todoID is missing 
-    if(!todoId)
-        {
-            return res.send({
-                status : 400,
-                message : "todoId is missing"
-            })
-        }
+    if (!todoId) {
+        return res.send({
+            status: 400,
+            message: "todoId is missing"
+        })
+    }
 
     //finding todo ID in the database.
     try {
-        const isTodoIdPresentInDB = await todoModel.findOne({_id : todoId});
+        const isTodoIdPresentInDB = await todoModel.findOne({ _id: todoId });
         console.log("todo id in database", isTodoIdPresentInDB);
 
         //if todo id is not present in database.
-        if(isTodoIdPresentInDB === null)
-            {
-                return res.send({
-                    status : 400,
-                    message : `in database not todoId present with ${isTodoIdPresentInDB}`,
-                })
-            }
+        if (isTodoIdPresentInDB === null) {
+            return res.send({
+                status: 400,
+                message: `in database not todoId present with ${isTodoIdPresentInDB}`,
+            })
+        }
         //extract the user name of todoId.
         const usernameFromTodoId = isTodoIdPresentInDB.username;
         // console.log("username from database ",usernameFromTodoId);
 
         //now we check this username with session based authentication id 
         //if not match then we return error.
-        if(usernameFromTodoId !== username)
-            {
-                return res.send({
-                    status : 403,
-                    message : "unautorized access",
-                })
-            }
+        if (usernameFromTodoId !== username) {
+            return res.send({
+                status: 403,
+                message: "unautorized access",
+            })
+        }
 
-        const deletedItemPrev = await todoModel.findOneAndDelete({_id : todoId});
+        const deletedItemPrev = await todoModel.findOneAndDelete({ _id: todoId });
         console.log(deletedItemPrev);
 
         return res.send({
-            status : 200,
-            message : "todo deleted successfully....",
-            data : deletedItemPrev,
+            status: 200,
+            message: "todo deleted successfully....",
+            data: deletedItemPrev,
         })
         console.log(check("before catch"))
     } catch (error) {
         return res.send({
-            status : 500,
-            message :"server side error",
-            error : error
+            status: 500,
+            message: "server side error",
+            error: error
         })
     }
 
