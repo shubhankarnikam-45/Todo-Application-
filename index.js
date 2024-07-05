@@ -22,6 +22,7 @@ const userModel = require("./models/userModel");
 const checkAuthentication = require("./middleware/isAuth");
 const todoModel = require("./models/todoModel");
 const todoValidation = require("./utils/todoUtil");
+const rateLimiting = require("./middleware/rateLimiting");
 
 //cli npm packaage variable.
 
@@ -293,7 +294,7 @@ function postLogout(req, res) {
 //mini app for todo.
 todoRouter
     .route("/create-todo")
-    .post(checkAuthentication, createTodo);
+    .post(checkAuthentication, rateLimiting, createTodo);
 
 todoRouter
     .route("/read-todo")
@@ -312,7 +313,7 @@ todoRouter
 //function post todo.
 async function createTodo(req, res) {
     // console.log(req.session)
-    // console.log(check("post todo"));
+    console.log(check("post todo"));
 
     //required data collect from req. object.
     const { todo } = (req.body);

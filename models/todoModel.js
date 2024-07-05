@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 let todoSchema = new Schema({
     todo : {
         type: String,
-        require:true
+        required:true
     },
     username :{
         type:String,
