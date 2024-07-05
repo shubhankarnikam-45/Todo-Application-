@@ -1,5 +1,7 @@
 console.log("browser")
 
+let skip  = 0;
+
 //this function run when browser is load.
 window.onload = loadTodos;
 
@@ -7,7 +9,7 @@ function loadTodos() {
     // console.log("in loadTodo() function")
     //to use axios first user 'cdn' link.
     axios
-        .get("/todos/read-todo")
+        .get(`/todos/read-todo?skip=${skip}`)
         .then((res) => {
 
             // console.log(res)
@@ -22,7 +24,7 @@ function loadTodos() {
             //here we get all todos to the respective user who login.
             const allTodos = res.data.userTodo;
             // console.log(allTodos)
-
+            skip +=allTodos.length;
             //now we target the 'unorder-list' in UI.
             //hrere we adding id to edit and delete button.
             document.getElementById("item-list").insertAdjacentHTML("beforeend",
@@ -139,5 +141,10 @@ window.addEventListener("click", (event) => {
                 console.log("Error ", err)
             })
 
+    }
+
+    else if(event.target.classList.contains("show-more"))
+    {
+       loadTodos();
     }
 })

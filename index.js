@@ -357,13 +357,28 @@ async function createTodo(req, res) {
 async function readTodo(req, res) {
     console.log(check("in get request todo done done...."));
 
+    const SKIP = Number(req.query.skip) || 0;
+    const LIMIT = 5;
+    // console.log("query ", SKIP)
     //we have identify the unique identifire to search.
     const username = req.session.user.username;
     // console.log(check("username ", username));
 
     //search the todo in the database.
     try {
-        const allTodosFromDb = await todoModel.find({ username });
+        const allTodosFromDb = await todoModel.aggregate(
+            [
+                {
+                    $match : {username : username},
+                },
+                {
+                    $skip : SKIP,
+                },
+                {
+                    $limit : LIMIT,
+                }
+            ]
+        );
         console.log("all entires", allTodosFromDb)
 
         if (allTodosFromDb.length == 0) {
