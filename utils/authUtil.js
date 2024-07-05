@@ -11,7 +11,7 @@
 
 function registrationPageValidation({ name, email, username, password }) {
 
-    console.log("in functoin ", name, email, username, password)
+    // console.log("in functoin ", name, email, username, password)
     return new Promise((resolve, reject) => {
 
         if (!name) {

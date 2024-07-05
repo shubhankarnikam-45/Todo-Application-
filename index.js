@@ -110,8 +110,7 @@ homeRouter
 
 // function getHomePage
 function getHomePage(req, res) {
-    console.log(check("home")
-    )
+    // console.log(check("home"))
     return res.render("homePage.ejs")
 }
 registrationPageRouter
@@ -126,7 +125,7 @@ function getRegistrationPage(req, res) {
 
 //  function postRegistraionPage is done 
 async function postRegistraionPage(req, res) {
-    console.log(apicheck("post request for registaion"));
+    // console.log(apicheck("post request for registaion"));
     const { name, email, username, password } = req.body;
     // console.log(check(name, email, username, password));
 
@@ -161,7 +160,7 @@ async function postRegistraionPage(req, res) {
         })
     } catch (err) {
 
-        console.log(err);
+        // console.log(err);
         res.status(500).json({
             message: "internal server error",
             error: err
@@ -186,7 +185,7 @@ function getLoginPage(req, res) {
 
 // function postLoginPage
 async function postLoginPage(req, res) {
-    console.log(apicheck("post request for login page is running fine..."));
+    // console.log(apicheck("post request for login page is running fine..."));
 
     // console.log(req.session);
     //destructuring the user data.
@@ -203,17 +202,17 @@ async function postLoginPage(req, res) {
         let userLoginIdCheckFromDB;
 
         if (isEmailAddress(loginId)) {
-            console.log(check("email"))
+            // console.log(check("email"))
             //that means loginId is email.
             userLoginIdCheckFromDB = await userModel.findOne({ email: loginId });
         }
         else {
-            console.log(check("usename"))
+            // console.log(check("usename"))
             //that means loginId is usename.
             userLoginIdCheckFromDB = await userModel.findOne({ username: loginId });
         }
 
-        console.log("user data ", userLoginIdCheckFromDB)
+        // console.log("user data ", userLoginIdCheckFromDB)
         //if userLoginCheckFromDb.
         if (!userLoginIdCheckFromDB) {
             return res.status(400).json({
@@ -249,7 +248,7 @@ async function postLoginPage(req, res) {
         return res.redirect("/dashboard");
         // console.log(check("last line of login api"));
     } catch (err) {
-        console.log(bug("from client side blunder happen===>", err));
+        // console.log(bug("from client side blunder happen===>", err));
         return res.status(400).json({
             message: err
         })
@@ -277,6 +276,7 @@ logoutRouter
 
 // function postLogout
 function postLogout(req, res) {
+
     req.session.destroy((err) => {
         if (err) {
             return res.status(500).json({
@@ -284,9 +284,8 @@ function postLogout(req, res) {
             })
         }
         else {
-            return res.status(200).json({
-                message: "logout successful..."
-            })
+        
+            return res.redirect('/login')
         }
     })
 }
@@ -313,7 +312,7 @@ todoRouter
 //function post todo.
 async function createTodo(req, res) {
     // console.log(req.session)
-    console.log(check("post todo"));
+    // console.log(check("post todo"));
 
     //required data collect from req. object.
     const { todo } = (req.body);
@@ -356,7 +355,7 @@ async function createTodo(req, res) {
 
 //function that read todo.
 async function readTodo(req, res) {
-    console.log(check("in get request todo done done...."));
+    // console.log(check("in get request todo done done...."));
 
     const SKIP = Number(req.query.skip) || 0;
     const LIMIT = 5;
@@ -380,7 +379,7 @@ async function readTodo(req, res) {
                 }
             ]
         );
-        console.log("all entires", allTodosFromDb)
+        // console.log("all entires", allTodosFromDb)
 
         if (allTodosFromDb.length == 0) {
             return res.send({
@@ -412,7 +411,7 @@ async function readTodo(req, res) {
 
 //function that update todo.
 async function updateTodo(req, res) {
-    console.log(check("update todo"))
+    // console.log(check("update todo"))
 
     const { newTodo, todoId } = req.body;
 
@@ -453,7 +452,7 @@ async function updateTodo(req, res) {
         }
 
         //if here another user try to edit this todo , we use below condition.
-        console.log(isTodoPresent.username, req.session.user.username) 
+        // console.log(isTodoPresent.username, req.session.user.username) 
 
         if (isTodoPresent.username !== req.session.user.username) {
             // console.log(check("not valid"));
@@ -499,7 +498,7 @@ async function updateTodo(req, res) {
 
 //function that delete todo.
 async function deleteTodo(req, res) {
-    console.log(check("in delete"))
+    // console.log(check("in delete"))
     // console.log("body ", req.body);
 
     const { todoId } = req.body;
@@ -518,7 +517,7 @@ async function deleteTodo(req, res) {
     //finding todo ID in the database.
     try {
         const isTodoIdPresentInDB = await todoModel.findOne({ _id: todoId });
-        console.log("todo id in database", isTodoIdPresentInDB);
+        // console.log("todo id in database", isTodoIdPresentInDB);
 
         //if todo id is not present in database.
         if (isTodoIdPresentInDB === null) {
@@ -541,7 +540,7 @@ async function deleteTodo(req, res) {
         }
 
         const deletedItemPrev = await todoModel.findOneAndDelete({ _id: todoId });
-        console.log(deletedItemPrev);
+        // console.log(deletedItemPrev);
 
         return res.send({
             status: 200,

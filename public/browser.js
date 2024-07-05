@@ -147,4 +147,15 @@ window.addEventListener("click", (event) => {
     {
        loadTodos();
     }
+
+    else if(event.target.classList.contains("logout-btn"))
+    {
+        axios.post("/logout")
+        .then((res)=>{
+
+        })
+        .catch((error)=>{
+            
+        })
+    }
 })

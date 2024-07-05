@@ -6,7 +6,7 @@ const rateLimiting = async (req, res, next) => {
 
     //session ID 
     const sessionId = req.session.id;
-    console.log("in rate limiting middleware ", sessionId)
+    // console.log("in rate limiting middleware ", sessionId)
 
     //check session ID present in datbase or not 
     //if yes then check time limit 
