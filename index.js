@@ -508,7 +508,7 @@ async function deleteTodo(req, res) {
         if (isTodoIdPresentInDB === null) {
             return res.send({
                 status: 400,
-                message: `in database not todoId present with ${isTodoIdPresentInDB}`,
+                message: `in database not todoId present with ${todoId}`,
             })
         }
         //extract the user name of todoId.
@@ -532,7 +532,7 @@ async function deleteTodo(req, res) {
             message: "todo deleted successfully....",
             data: deletedItemPrev,
         })
-        console.log(check("before catch"))
+        // console.log(check("before catch"))
     } catch (error) {
         return res.send({
             status: 500,

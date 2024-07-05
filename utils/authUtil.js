@@ -2,12 +2,12 @@
 //regex.
 
 
-function isEmailAddress(str) {
-    var pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-    if(str.match(pattern))
-        return true;
-    return false;
-}
+    function isEmailAddress(str) {
+        var pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+        if(str.match(pattern))
+            return true;
+        return false;
+    }
 
 function registrationPageValidation({ name, email, username, password }) {
 
