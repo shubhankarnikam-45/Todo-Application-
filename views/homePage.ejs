@@ -3,7 +3,8 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Authentication Page</title>
+    <title>TaskTracker Authentication Page</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -14,6 +15,32 @@
             height: 100vh;
             margin: 0;
             color: #333;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .heading-container {
+            margin-bottom: 30px;
+        }
+
+        .main-heading {
+            color: #4a4a4a;
+            font-size: 60px;
+            margin: 0;
+        }
+
+        p {
+            color: #555;
+            font-size: 18px;
+            margin: 10px 0 30px;
+            width: 430px;
         }
 
         .container {
@@ -24,12 +51,12 @@
             border: 1px solid #d1d1d1;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            text-align: center;
         }
 
         h1 {
             color: #4a4a4a;
             margin-bottom: 20px;
+            font-size: 24px;
         }
 
         button {
@@ -48,22 +75,52 @@
         button:hover {
             background-color: #417cb8;
         }
+
+        @media (max-width: 500px) {
+            .main-heading {
+                font-size: 48px;
+            }
+
+            p {
+                font-size: 16px;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h1>Welcome</h1>
-        <!-- <button onclick="window.location.href='/login'">Login</button>
-        <button onclick="window.location.href='/registration' ">Register</button> -->
-        <form action='/login' method="GET">
-            <button> Login </button>
-        </form>
-
-        <form action='/registration' method="GET">
-            <button> Register </button>
-        </form>
+    <div class="main-container">
+        <div class="heading-container">
+            <h1 class="main-heading">TaskTracker</h1>
+            <p>Your ultimate tool for managing tasks efficiently &   effectively.</p>
+        </div>
+        <div class="container">
+            <h1>Welcome</h1>
+            <form action='/login' method="GET">
+                <button>Login</button>
+            </form>
+            <form action='/registration' method="GET">
+                <button>Register</button>
+            </form>
+        </div>
     </div>
+
+    <script>
+        gsap.fromTo(".main-heading", { 
+            opacity: 0, 
+            y: -50 
+        }, { 
+            opacity: 1, 
+            y: 0, 
+            duration: 2, 
+            ease: "bounce.out"
+        });
+    </script>
 </body>
 
 </html>

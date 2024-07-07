@@ -7,44 +7,53 @@
   <title>Simple To-Do App</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
     integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+  <style>
+    .main-heading {
+      color: #4a4a4a;
+      font-size: 60px;
+      margin-left: 400px;
+
+    }
+  </style>
 </head>
 
 <body>
   <div class="container">
-    <h1 class="display-4 text-center py-1">To-Do App</h1>
+    <h1 class="main-heading">TaskTracker</h1>
 
     <div class="jumbotron p-3 shadow-sm">
-      
-        <div class="d-flex align-items-center">
-          <input id="create_field" name='todo' autofocus autocomplete="off" class="form-control mr-3" type="text"
-            style="flex: 1;">
-          <button class="add_item btn btn-primary">Add New Item</button>
-        </div>
-      
+
+      <div class="d-flex align-items-center">
+        <input id="create_field" name='todo' autofocus autocomplete="off" class="form-control mr-3" type="text"
+          style="flex: 1;">
+        <button class="add_item btn btn-primary">Add New Item</button>
+      </div>
+
     </div>
 
     <!-- <ul id="item_list" class="list-group pb-5">
     </ul> -->
     <ul id="item-list" class="list-group">
     </ul>
-    <br/>
+    <br />
     <button class="show-more">Show More...</button>
-    <br/>
-    <br/>
+    <br />
+    <br />
     <form action='/logout' method="POST">
-      <button> Logout </button>    
+      <button> Logout </button>
     </form>
 
-    <br/>
+    <br />
     <!-- logout from all devices -->
     <!-- <form action='/logout-from-all' method="POST">
       <button> Logout From All Devices</button>  
     </form> -->
   </div>
-<!-- <script src="/public/browser.js"></script> -->
-<script src="/browser.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <!-- <script src="/public/browser.js"></script> -->
+  <script src="/browser.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
 </body>
 
