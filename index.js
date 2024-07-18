@@ -154,10 +154,11 @@ async function postRegistraionPage(req, res) {
 
     try {
         const userDataFromDB = await userData.save();
-        return res.status(201).json({
-            message: "data saved successfully in database.",
-            userDataFromDB
-        })
+        // return res.status(201).json({
+        //     message: "data saved successfully in database.",
+        //     userDataFromDB
+        // })
+        return res.redirect("/login");
     } catch (err) {
 
         // console.log(err);
