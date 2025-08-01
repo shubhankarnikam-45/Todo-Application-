@@ -94,6 +94,21 @@
 </head>
 
 <body>
+
+    <!-- Loader -->
+<div id="loader" style="
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+">
+  <h2 style="font-family: sans-serif;">⏳ Please wait, loading homepage...</h2>
+</div>
+
     <div class="main-container">
         <div class="heading-container">
             <h1 class="main-heading">TaskTracker</h1>
@@ -121,6 +136,12 @@
             ease: "bounce.out"
         });
     </script>
+
+      <script>
+    window.addEventListener("load", function () {
+      document.getElementById("loader").style.display = "none";
+    });
+  </script>
 </body>
 
 </html>

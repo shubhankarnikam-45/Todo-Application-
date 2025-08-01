@@ -5,9 +5,14 @@ let skip  = 0;
 //this function run when browser is load.
 window.onload = loadTodos;
 
+
 function loadTodos() {
     // console.log("in loadTodo() function")
     //to use axios first user 'cdn' link.
+
+   
+
+    
     axios
         .get(`/todos/read-todo?skip=${skip}`)
         .then((res) => {

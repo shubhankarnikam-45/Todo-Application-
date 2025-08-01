@@ -44,12 +44,11 @@ const store = new mongodbSession({
 
 
 //database connection.
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => {
+mongoose.connect(process.env.MONGO_URL).then(() => {
         console.log(notice("database connected successfully..."));
     })
     .catch((err) => {
-        console.log(error("database conenction failed...", err))
+        console.log(warn("database conenction failed...", err))
     })
 
 
